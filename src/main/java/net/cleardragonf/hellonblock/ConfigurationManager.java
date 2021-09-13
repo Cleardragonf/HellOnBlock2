@@ -1,12 +1,14 @@
 package net.cleardragonf.hellonblock;
 
 import com.google.common.collect.ImmutableList;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.Hostile;
 import org.spongepowered.api.entity.living.Monster;
+import org.spongepowered.api.entity.living.animal.Animal;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.cleardragonf.hellonblock.ConfigurationManager;
+import org.spongepowered.api.registry.RegistryType;
 import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -42,15 +45,15 @@ public class ConfigurationManager
 
     public void enable()
     {
-        File Week1 = new File(String.valueOf(this.configDir), "Entity.conf");
-        File TimeTrackerTime = new File(String.valueOf(this.configDir), "TimeTracking.conf");
+        File Week1 = new File(String.valueOf(configDir), "Entity.config");
+        File TimeTrackerTime = new File(String.valueOf(configDir), "TimeTracking.conf");
 
         this.configLoader1 = HoconConfigurationLoader.builder().file(Week1).build();
         this.TimeTrackLoader = HoconConfigurationLoader.builder().file(TimeTrackerTime).build();
         try
         {
             if (!Files.exists(configDir)) {
-                Files.createFile(this.configDir);
+                Files.createDirectory(configDir);
             }
             if (!TimeTrackerTime.isFile()) {
                 try
@@ -58,8 +61,8 @@ public class ConfigurationManager
                     TimeTrackerTime.createNewFile();
                     loadTime();
                     this.TimeTracker.node("========Time Tracking========").comment("The Point of this config is to keep track of the Time and Date");
-                    this.TimeTracker.node("========Time Tracking========", "Day: ").comment("Day number in Game. Between 1-30").getString("1");
-                    this.TimeTracker.node("========Time Tracking========", "Time: ").comment("Set the Time in Game. Between 0 - 24000").getString("0");
+                    this.TimeTracker.node("========Time Tracking========", "Day: ").comment("Day number in Game. Between 1-30").set("1");
+                    this.TimeTracker.node("========Time Tracking========", "Time: ").comment("Set the Time in Game. Between 0 - 24000").set("0");
                     saveTime();
                 }
                 catch (Exception e)
@@ -78,6 +81,10 @@ public class ConfigurationManager
                             return y.isAssignableFrom(x.getClass());
                         });
                     }).collect(Collectors.toList());
+                    for (EntityType a :
+                            cet) {
+                        Sponge.server().broadcastAudience().sendMessage(Component.text("HOB Says ").append(a));
+                    }
                     this.config1.node("=============Entity Control============").comment("This Portion of the Config is dedicated to the Control of Entities");
                     for (EntityType entity : cet){
                         for (int weekNumber = 1; weekNumber <= 5; weekNumber++) {
@@ -89,9 +96,9 @@ public class ConfigurationManager
                             }
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Natural Spawning=====", "Number of " + entity.tagType().tagRegistry().referenced(Keys.DISPLAY_NAME.key()) + "'s to attempt: ").comment("Any Whole Number ~99999").set(10);
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Natural Spawning=====", "The Chance of each " + entity.tagType().tagRegistry().referenced(Keys.DISPLAY_NAME.key()) + "actually spawning: ").comment("0-100").set(100);
-                            this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Natural Spawning=====", "Minimum Range: ").set(3);
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Natural Spawning=====", "Maximum Range: ").set(5);
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Custom Health: ").set(false);
+                            this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Natural Spawning=====", "Minimum Range: ").set(3);
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Anger: ").set(false);
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Custom Projectile Damage: ").set(false);
                             this.config1.node("=============Entity Control============", entity.tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Projectile Damage: ").set(10);
