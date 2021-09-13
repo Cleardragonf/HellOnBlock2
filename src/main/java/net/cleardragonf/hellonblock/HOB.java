@@ -17,12 +17,14 @@ import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+import org.spongepowered.api.event.GenericEvent;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.lifecycle.*;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -92,7 +94,7 @@ public class HOB {
 
 
     @Listener
-    public void allhands(RegisterCommandEvent event){
+    public void allhands(RegisterCommandEvent<Command.Parameterized> event){
         ConfigurationManager.getInstance().ConfigurationManager2(configDir);
         ConfigurationManager.getInstance().enable();
         instance = this;
@@ -101,12 +103,12 @@ public class HOB {
                 .shortDescription(Component.text("Tells the time and day of the month"))
                 .executor(new CommandManager())
                 .build();
-        event.register(pluginContainer, TimeCommand, "hobtime");
+        event.register(pluginContainer, (Command.Parameterized) TimeCommand, "hobtime");
         Command SetDayCommand = Command.builder()
                 .shortDescription(Component.text("Set the Date in Minecraft"))
                 .executor(new SetDayCommand())
                 .build();
-        event.register(pluginContainer, SetDayCommand, "HOB");
+        event.register(pluginContainer, (Command.Parameterized) SetDayCommand, "HOB");
     }
 
     @Listener//entityData is to be fired anytime and Entity is Detected being spawned.
@@ -145,7 +147,7 @@ public class HOB {
     }
 
     @Listener
-    public void SpawnTracking(StartedEngineEvent event){
+    public void SpawnTracking(StartedEngineEvent<Server> event){
         Sponge.asyncScheduler().submit(Task.builder()
                 .delay(20, TimeUnit.SECONDS)
                 .name("locationTracking")
@@ -165,11 +167,10 @@ public class HOB {
     }
 
     @Listener
-    public void payPlayers(LifecycleEvent event){
+    public void payPlayers(StartedEngineEvent<Server> event){
         Sponge.eventManager().registerListeners(pluginContainer, new EcoRewards());
         //Sponge.getEventManager().registerListeners(this, new EcoRewards());
     }
-
     private static EconomyService economyService;
     //@Listener
     //public void onChangeServiceProvider(EconomyService event){
@@ -192,7 +193,7 @@ public class HOB {
         Sponge.game().server().broadcastAudience().sendMessage(Component.text("HOB's Has Reloaded Successfully!!!"));
     }
     @Listener
-    public void Ending(StoppingEngineEvent event) throws SerializationException {
+    public void Ending(StoppingEngineEvent<Server> event) throws SerializationException {
         //how to tell the lifesycle is 'Stoping'
         int days = MinecraftDayTime.minecraftEpoch().day();
         int hour = Sponge.server().worldManager().defaultWorld().properties().dayTime().hour();

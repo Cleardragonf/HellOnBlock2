@@ -98,7 +98,7 @@ public class EcoRewards {
             UUID player2 = player.uniqueId();
 
 
-            String entity = event.entity().displayName().toString();
+            String entity = event.entity().getClass().getName();
             String entity2 = event.entity().uniqueId().toString();
             Cause cause = event.cause();
             //if(entity2 == null){
@@ -114,7 +114,7 @@ public class EcoRewards {
             }else{
 
                 BigDecimal bd = new BigDecimal("5.00");
-                player.sendMessage(Component.text("You Killed a " + entity + " and will be paid $5"));
+                player.sendMessage(Component.text("You killed a ").append(event.entity().type()).append(Component.text(" and earned $5")));
                 HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
                 Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
             }
