@@ -13,9 +13,6 @@ import java.awt.*;
 import net.cleardragonf.hellonblock.DayCounter;
 
 public class DayCounter {
-    public static int days = ConfigurationManager.getInstance().getTimeTrack().node("========Time Tracking========", "Day: ").getInt();
-    public static int CustWeek = 1;
-    public static int config = 1;
     public static int week = 1;
 
     public DayCounter() {
@@ -26,7 +23,7 @@ public class DayCounter {
         if (31 > currentTime.day()) {
 
         } else {
-            currentTime.subtract(31,0,0);
+            currentTime.subtract(30,0,0);
         }
 
     }

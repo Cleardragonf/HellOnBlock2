@@ -1,6 +1,7 @@
 package net.cleardragonf.hellonblock;
 
 import com.google.inject.Inject;
+import net.cleardragonf.hellonblock.AddOns.Balance;
 import net.cleardragonf.hellonblock.AddOns.EcoRewards;
 import net.cleardragonf.hellonblock.Commands.CommandManager;
 import net.cleardragonf.hellonblock.Commands.SetDayCommand;
@@ -42,7 +43,7 @@ public class HOB {
     public static final String NAME = "[HOS]";
 
     @Inject
-    private Logger logger;
+    public Logger logger;
 
     @Inject
     Game game;
@@ -95,20 +96,23 @@ public class HOB {
 
     @Listener
     public void allhands(RegisterCommandEvent<Command.Parameterized> event){
-        ConfigurationManager.getInstance().ConfigurationManager2(configDir);
-        ConfigurationManager.getInstance().enable();
         instance = this;
         //setting the Commands here.
-        Command TimeCommand = Command.builder()
+        Command.Parameterized TimeCommand = Command.builder()
                 .shortDescription(Component.text("Tells the time and day of the month"))
                 .executor(new CommandManager())
                 .build();
-        event.register(pluginContainer, (Command.Parameterized) TimeCommand, "hobtime");
-        Command SetDayCommand = Command.builder()
+        event.register(pluginContainer, TimeCommand, "hobtime");
+        Command.Parameterized SetDayCommand = Command.builder()
                 .shortDescription(Component.text("Set the Date in Minecraft"))
                 .executor(new SetDayCommand())
                 .build();
-        event.register(pluginContainer, (Command.Parameterized) SetDayCommand, "HOB");
+        event.register(pluginContainer, SetDayCommand, "HOB");
+        Command.Parameterized Balance = Command.builder()
+                .shortDescription(Component.text("Get's your Balance"))
+                .executor(new Balance())
+                .build();
+        event.register(pluginContainer, Balance, "bal");
     }
 
     @Listener//entityData is to be fired anytime and Entity is Detected being spawned.
@@ -122,8 +126,11 @@ public class HOB {
     //========Game Schedulers ========
     @Listener
     public void daytracker3(StartedEngineEvent<Server> event){
+        ConfigurationManager.getInstance().ConfigurationManager2(configDir);
+        ConfigurationManager.getInstance().enable();
         //replacing below section
-        Sponge.server().worldManager().defaultWorld().properties().setDayTime(MinecraftDayTime.of(ConfigurationManager.getInstance().getTimeTrack().node("========Time Tracking========", "Time: ").getInt(), 0,0));
+        ///doesn't work yet because config doesn't work\
+        //Sponge.server().worldManager().defaultWorld().properties().setDayTime(MinecraftDayTime.of(ConfigurationManager.getInstance().getTimeTrack().node("========Time Tracking========", "Time: ").getInt(), 0,0));
 
         //Sponge.getServer().getDefaultWorld().get().setWorldTime((ConfigurationManager.getInstance().getTimeTrack().getNode("========Time Tracking========", "Time: ").getLong()));
 
@@ -147,15 +154,17 @@ public class HOB {
     }
 
     @Listener
-    public void SpawnTracking(StartedEngineEvent<Server> event){
-        Sponge.asyncScheduler().submit(Task.builder()
-                .delay(20, TimeUnit.SECONDS)
+    public void payPlayers(StartedEngineEvent<Server> event){
+        Sponge.eventManager().registerListeners(pluginContainer, new EcoRewards());
+        Sponge.server().scheduler().submit(Task.builder()
+                .interval(20, TimeUnit.SECONDS)
                 .name("locationTracking")
                 .plugin(pluginContainer)
                 .execute(scheduledTask -> {
                     for(ServerPlayer a: Sponge.server().onlinePlayers()){
                         if(a.world().properties().displayName().toString() != "DIM144"){
                             Player player2 = Sponge.server().onlinePlayers().iterator().next();
+                            Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
                             SpawnTesting spawnTest = new SpawnTesting();
                             spawnTest.getSpace(player2);
                         }else{
@@ -164,11 +173,6 @@ public class HOB {
                     }
                 }).build()
         );
-    }
-
-    @Listener
-    public void payPlayers(StartedEngineEvent<Server> event){
-        Sponge.eventManager().registerListeners(pluginContainer, new EcoRewards());
         //Sponge.getEventManager().registerListeners(this, new EcoRewards());
     }
     private static EconomyService economyService;

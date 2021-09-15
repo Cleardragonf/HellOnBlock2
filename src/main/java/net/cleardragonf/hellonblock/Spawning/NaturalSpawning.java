@@ -4,6 +4,7 @@ import com.google.inject.Key;
 import net.cleardragonf.hellonblock.ConfigurationManager;
 import net.cleardragonf.hellonblock.DayCounter;
 import net.cleardragonf.hellonblock.MobMechanics.CustomHealth;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
@@ -99,6 +100,7 @@ public class NaturalSpawning {
             }
         }
         spawnLocation.world().spawnEntity(creeper);
+        Sponge.server().broadcastAudience().sendMessage(Component.text(creeper.toString() + " has been spawned"));
         ///Sponge.getServer().getBroadcastChannel().send(Text.of(list2.get(0).getName()));
         //Songe.getServer().getBroadcastChannel().send(Text.of(list2.get(0).getId()));
     }
