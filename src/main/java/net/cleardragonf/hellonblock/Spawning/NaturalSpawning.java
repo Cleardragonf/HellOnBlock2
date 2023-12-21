@@ -70,7 +70,7 @@ public class NaturalSpawning {
         }else{
             week = "HOB Night";
         }
-        SpawnTesting nextLocation = new SpawnTesting();
+        //SpawnTesting nextLocation = new SpawnTesting();
 
         Entity entity = spawnLocation.world().createEntity(list2.get(0), spawnLocation.position());
         Entity creeper = entity;

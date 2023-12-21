@@ -114,8 +114,8 @@ public class ConfigurationManager
                             }else{
                                 week = "HOB Night";
                             }
-                            this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Number of " + entity.tagType().tagRegistry().referenced(Keys.DISPLAY_NAME.key()) + "'s to attempt: ").comment("Any Whole Number ~99999").set(10);
-                            this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "The Chance of each " + entity.tagType().tagRegistry().referenced(Keys.DISPLAY_NAME.key()) + "actually spawning: ").comment("0-100").set(100);
+                            this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Number of " + entity.toString() + "'s to attempt: ").comment("Any Whole Number ~99999").set(10);
+                            this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "The Chance of each " + entity.toString() + " actually spawning: ").comment("0-100").set(100);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Minimum Range: ").set(3);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Maximum Range: ").set(5);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Custom Properties=====", "Enable Custom Health: ").set(false);
@@ -138,6 +138,11 @@ public class ConfigurationManager
                     this.config1.node("========General Week Properties========").comment("The Below is used for Week 1's General Configuration");
                     this.config1.node("========General Week Properties========", "Time Between Waves");
                     this.config1.node("========General Week Properties========", "Time Between Waves", "Time").comment("In Ticks(20ticks per second)").set("460");
+                    this.config1.node("========General Week Properties========", "Week 1", "Wave Size").comment("Number of Entities per wave in Week 1").set(20);
+                    this.config1.node("========General Week Properties========", "Week 2", "Wave Size").comment("Number of Entities per wave in Week 1").set(30);
+                    this.config1.node("========General Week Properties========", "Week 3", "Wave Size").comment("Number of Entities per wave in Week 1").set(40);
+                    this.config1.node("========General Week Properties========", "Week 4", "Wave Size").comment("Number of Entities per wave in Week 1").set(50);
+                    this.config1.node("========General Week Properties========", "HOB Night", "Wave Size").comment("Number of Entities per wave in Week 1").set(60);
 
                     save1();
                 }

@@ -137,7 +137,6 @@ public class HOB {
         //replacing below section
         Sponge.asyncScheduler().submit(Task.builder()
                 .delay(20, TimeUnit.SECONDS)
-                .name("daytracker")
                 .plugin(pluginContainer)
                 .execute(scheduledTask -> {
                     DayCounter getStarted = new DayCounter();
@@ -158,14 +157,13 @@ public class HOB {
         Sponge.eventManager().registerListeners(pluginContainer, new EcoRewards());
         Sponge.server().scheduler().submit(Task.builder()
                 .interval(20, TimeUnit.SECONDS)
-                .name("locationTracking")
                 .plugin(pluginContainer)
                 .execute(scheduledTask -> {
                     for(ServerPlayer a: Sponge.server().onlinePlayers()){
                         if(a.world().properties().displayName().toString() != "DIM144"){
                             Player player2 = Sponge.server().onlinePlayers().iterator().next();
                             Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
-                            SpawnTesting spawnTest = new SpawnTesting();
+                            SpawnTesting spawnTest = new SpawnTesting(ConfigurationManager.getInstance());
                             spawnTest.getSpace(player2);
                         }else{
                             logger.info(a.name() + " is currently sitting in a Compact Machine");
