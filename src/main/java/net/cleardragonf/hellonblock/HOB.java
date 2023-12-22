@@ -78,6 +78,12 @@ public class HOB {
     }
 
     @Inject
+    public HOB(PluginContainer container){
+        this.pluginContainer = container;
+        instance = this;
+    }
+
+    @Inject
     @ConfigDir(sharedRoot = false)
     private Path configDir;
 
@@ -101,9 +107,9 @@ public class HOB {
 
     @Listener
     public void onRegisterData(RegisterDataEvent event) {
-        DataRegistration.of(CustomKeys.CUSTOM_MAP_KEY, Entity.class);
-        // Assuming CUSTOM_MAP_KEY is a Key<MapValue<String, Integer>>
+        event.register(DataRegistration.of(CustomKeys.COST, Entity.class));
     }
+
 
 
 

@@ -111,19 +111,11 @@ public class NaturalSpawning {
                 creeper.offer(Keys.EXPLOSION_RADIUS, explosionRadius);
             }
         }
-        if(creeper.supports(CustomKeys.CUSTOM_MAP_KEY)){
+        if(creeper.supports(CustomKeys.COST)){
             // Get the existing map value
-            MapValue<String, Integer> mapValue = (MapValue) creeper.getOrElse(CustomKeys.CUSTOM_MAP_KEY, null);
-
-
-
-            // Modify the map or create a new one if it doesn't exist
-            // Modify the map or create a new one if it doesn't exist
-            Map<String, Integer> map = (mapValue != null) ? new HashMap<>(mapValue.get()) : new HashMap<>();
-            map.put("Value", 30);
 
             // Set the modified map value back to the entity
-            creeper.offer(CustomKeys.CUSTOM_MAP_KEY, map);
+            creeper.offer(CustomKeys.COST, 5);
 
         }
 
