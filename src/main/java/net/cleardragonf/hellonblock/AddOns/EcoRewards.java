@@ -75,7 +75,7 @@ public class EcoRewards {
             UUID player2 = player.uniqueId();
 
             String entity = event.entity().displayName().toString();
-            String entity2 = event.entity().uniqueId().toString();
+            String entity2 = event.entity().toString();
             Cause cause = event.cause();
             if(!ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entity2, week, "=====Monetary Benifits=====", "Per Kill: ").virtual()){
                 BigDecimal bd = new BigDecimal(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entity2, week, "=====Monetary Benifits=====", "Per Kill: ").getString());

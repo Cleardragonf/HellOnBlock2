@@ -26,14 +26,18 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.util.MinecraftDayTime;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
+import sun.rmi.runtime.Log;
 
 @Plugin("hellonblocks")
 public class HOB {
@@ -155,6 +159,13 @@ public class HOB {
     @Listener
     public void payPlayers(StartedEngineEvent<Server> event){
         Sponge.eventManager().registerListeners(pluginContainer, new EcoRewards());
+
+        Optional<EconomyService> serviceOpt = Sponge.server().serviceProvider().economyService();
+        if (!serviceOpt.isPresent()) {
+            logger.info("great still not working");
+        }
+        EconomyService economyService = serviceOpt.get();
+
         Sponge.server().scheduler().submit(Task.builder()
                 .interval(20, TimeUnit.SECONDS)
                 .plugin(pluginContainer)
@@ -173,6 +184,8 @@ public class HOB {
         );
         //Sponge.getEventManager().registerListeners(this, new EcoRewards());
     }
+
+
     private static EconomyService economyService;
     //@Listener
     //public void onChangeServiceProvider(EconomyService event){
@@ -186,7 +199,6 @@ public class HOB {
     public static EconomyService getEcon(){
         return economyService;
     }
-
 
     @Listener
     public void reloading(RefreshGameEvent event){
