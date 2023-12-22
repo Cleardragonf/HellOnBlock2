@@ -6,6 +6,7 @@ import net.cleardragonf.hellonblock.AddOns.EcoRewards;
 import net.cleardragonf.hellonblock.Commands.CommandManager;
 import net.cleardragonf.hellonblock.Commands.SetDayCommand;
 import net.cleardragonf.hellonblock.MobMechanics.BreakBlockMechanic;
+import net.cleardragonf.hellonblock.MobMechanics.CustomKeys;
 import net.cleardragonf.hellonblock.Spawning.SpawnTesting;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Game;
@@ -13,6 +14,13 @@ import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.data.DataProvider;
+import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.data.Key;
+import org.spongepowered.api.data.persistence.DataQuery;
+import org.spongepowered.api.data.persistence.DataStore;
+import org.spongepowered.api.data.value.MapValue;
+import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
@@ -26,9 +34,7 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -75,6 +81,12 @@ public class HOB {
     }
 
     @Inject
+    public HOB(PluginContainer container){
+        this.pluginContainer = container;
+        instance = this;
+    }
+
+    @Inject
     @ConfigDir(sharedRoot = false)
     private Path configDir;
 
@@ -95,6 +107,12 @@ public class HOB {
             test.onEntitySpawn((EntityType) spawnedEntity);
         }
     }
+
+    @Listener
+    public void onRegisterData(RegisterDataEvent event) {
+        event.register(DataRegistration.of(CustomKeys.COST, Entity.class));
+    }
+
 
 
 
@@ -199,6 +217,7 @@ public class HOB {
     public static EconomyService getEcon(){
         return economyService;
     }
+
 
     @Listener
     public void reloading(RefreshGameEvent event){
