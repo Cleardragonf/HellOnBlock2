@@ -116,8 +116,6 @@ public class ConfigurationManager
                             }
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Number of " + entity.toString() + "'s to attempt: ").comment("Any Whole Number ~99999").set(10);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "The Chance of each " + entity.toString() + " actually spawning: ").comment("0-100").set(100);
-                            this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Minimum Range: ").set(3);
-                            this.config1.node("=============Entity Control============", entity.toString(), week, "=====Natural Spawning=====", "Maximum Range: ").set(5);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Custom Properties=====", "Enable Custom Health: ").set(false);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Custom Properties=====", "Enable Anger: ").set(false);
                             this.config1.node("=============Entity Control============", entity.toString(), week, "=====Custom Properties=====", "Enable Custom Projectile Damage: ").set(false);
@@ -139,11 +137,20 @@ public class ConfigurationManager
                     this.config1.node("========General Week Properties========", "Time Between Waves");
                     this.config1.node("========General Week Properties========", "Time Between Waves", "Time").comment("In Ticks(20ticks per second)").set("460");
                     this.config1.node("========General Week Properties========", "Week 1", "Wave Size").comment("Number of Entities per wave in Week 1").set(20);
+                    this.config1.node("========General Week Properties========", "Week 1", "Maximum Range: ").comment("Furthers away from a Player").set(30);
+                    this.config1.node("========General Week Properties========", "Week 1", "Minimum Range: ").comment("Closest to a Player").set(5);
                     this.config1.node("========General Week Properties========", "Week 2", "Wave Size").comment("Number of Entities per wave in Week 1").set(30);
+                    this.config1.node("========General Week Properties========", "Week 2", "Maximum Range: ").comment("Furthers away from a Player").set(30);
+                    this.config1.node("========General Week Properties========", "Week 2", "Minimum Range: ").comment("Closest to a Player").set(5);
                     this.config1.node("========General Week Properties========", "Week 3", "Wave Size").comment("Number of Entities per wave in Week 1").set(40);
+                    this.config1.node("========General Week Properties========", "Week 3", "Maximum Range: ").comment("Furthers away from a Player").set(30);
+                    this.config1.node("========General Week Properties========", "Week 3", "Minimum Range: ").comment("Closest to a Player").set(5);
                     this.config1.node("========General Week Properties========", "Week 4", "Wave Size").comment("Number of Entities per wave in Week 1").set(50);
+                    this.config1.node("========General Week Properties========", "Week 4", "Maximum Range: ").comment("Furthers away from a Player").set(30);
+                    this.config1.node("========General Week Properties========", "Week 4", "Minimum Range: ").comment("Closest to a Player").set(5);
                     this.config1.node("========General Week Properties========", "HOB Night", "Wave Size").comment("Number of Entities per wave in Week 1").set(60);
-
+                    this.config1.node("========General Week Properties========", "HOB Night", "Maximum Range: ").comment("Furthers away from a Player").set(30);
+                    this.config1.node("========General Week Properties========", "HOB Night", "Minimum Range: ").comment("Closest to a Player").set(5);
                     save1();
                 }
                 catch (Exception e)

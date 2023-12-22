@@ -6,6 +6,7 @@ import net.cleardragonf.hellonblock.AddOns.EcoRewards;
 import net.cleardragonf.hellonblock.Commands.CommandManager;
 import net.cleardragonf.hellonblock.Commands.SetDayCommand;
 import net.cleardragonf.hellonblock.MobMechanics.BreakBlockMechanic;
+import net.cleardragonf.hellonblock.MobMechanics.CustomKeys;
 import net.cleardragonf.hellonblock.Spawning.SpawnTesting;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Game;
@@ -13,20 +14,26 @@ import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.data.DataProvider;
+import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.data.Key;
+import org.spongepowered.api.data.persistence.DataQuery;
+import org.spongepowered.api.data.persistence.DataStore;
+import org.spongepowered.api.data.value.MapValue;
+import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.event.GenericEvent;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.lifecycle.*;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 
-import java.lang.reflect.Type;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -90,6 +97,12 @@ public class HOB {
             BreakBlockMechanic test = new BreakBlockMechanic();
             test.onEntitySpawn((EntityType) spawnedEntity);
         }
+    }
+
+    @Listener
+    public void onRegisterData(RegisterDataEvent event) {
+        DataRegistration.of(CustomKeys.CUSTOM_MAP_KEY, Entity.class);
+        // Assuming CUSTOM_MAP_KEY is a Key<MapValue<String, Integer>>
     }
 
 

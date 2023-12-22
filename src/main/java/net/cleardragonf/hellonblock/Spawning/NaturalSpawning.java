@@ -4,10 +4,12 @@ import com.google.inject.Key;
 import net.cleardragonf.hellonblock.ConfigurationManager;
 import net.cleardragonf.hellonblock.DayCounter;
 import net.cleardragonf.hellonblock.MobMechanics.CustomHealth;
+import net.cleardragonf.hellonblock.MobMechanics.CustomKeys;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.common.aliasing.qual.Unique;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
+import org.spongepowered.api.data.value.MapValue;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
@@ -18,8 +20,7 @@ import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import net.cleardragonf.hellonblock.Spawning.NaturalSpawning;
 import org.spongepowered.api.world.server.ServerWorld;
@@ -58,6 +59,9 @@ public class NaturalSpawning {
 
 
     }
+    public double mobHealth = 0;
+    public int explosionRadius = 0;
+    public
     int test = DayCounter.getWeeklyConfig();
     public String Config = "Config" + test;
 
@@ -73,34 +77,61 @@ public class NaturalSpawning {
         //SpawnTesting nextLocation = new SpawnTesting();
 
         Entity entity = spawnLocation.world().createEntity(list2.get(0), spawnLocation.position());
+        EntityType entityType = list2.get(0);
         Entity creeper = entity;
         //creeper.offer(Keys.GLOWING, true);
 
         if(creeper.supports(Keys.HEALTH)){
-            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Custom Health: ").getBoolean() == true){
-                creeper.offer(Keys.MAX_HEALTH, ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Custom Health: ").getDouble());
+            Sponge.server().broadcastAudience().sendMessage(Component.text("here's the Entity: " + entityType));
+            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Enable Custom Health: ").getBoolean() == true){
+                int maxHealth = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Custom Health: ").getInt();
+                Random random = new Random();
+                // Generate a random health value between 1 and customHealth
+                mobHealth = random.nextInt(maxHealth - 1) + 1;
+
+                creeper.offer(Keys.MAX_HEALTH, mobHealth);
+
                 CustomHealth giveFullHealth = new CustomHealth();
                 giveFullHealth.heal(creeper);
             }
         }
+
         if(creeper.supports(Keys.ANGER_LEVEL)){
-            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Anger: ").getBoolean() == true){
+            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Enable Anger: ").getBoolean() == true){
                 creeper.offer(Keys.ANGER_LEVEL, 5);
             }
         }
         if(creeper.supports(Keys.EXPLOSION_RADIUS)){
-            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Custom Explosion Damage: ").getBoolean() == true){
-                Integer blast = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Explosion Radius: ").getInt();
-                creeper.offer(Keys.EXPLOSION_RADIUS, blast);
+            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Enable Custom Explosion Damage: ").getBoolean() == true){
+                int blast = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Explosion Radius: ").getInt();
+
+                // Generate a random health value between 1 and customHealth
+                explosionRadius = (int) (Math.random() * (blast - 1) + 1);
+
+                creeper.offer(Keys.EXPLOSION_RADIUS, explosionRadius);
             }
         }
-        if(creeper.supports(Keys.ATTACK_DAMAGE)){
-            if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Enable Custom Projectile Damage: ").getBoolean() == true){
-                creeper.offer(Keys.ATTACK_DAMAGE, ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", list2.get(0).tagType().tagRegistry().referenced(Keys.UNIQUE_ID.key()), week, "=====Custom Properties=====", "Projectile Damage: ").getDouble());
-            }
+        if(creeper.supports(CustomKeys.CUSTOM_MAP_KEY)){
+            // Get the existing map value
+            MapValue<String, Integer> mapValue = (MapValue) creeper.getOrElse(CustomKeys.CUSTOM_MAP_KEY, null);
+
+
+
+            // Modify the map or create a new one if it doesn't exist
+            // Modify the map or create a new one if it doesn't exist
+            Map<String, Integer> map = (mapValue != null) ? new HashMap<>(mapValue.get()) : new HashMap<>();
+            map.put("Value", 30);
+
+            // Set the modified map value back to the entity
+            creeper.offer(CustomKeys.CUSTOM_MAP_KEY, map);
+
         }
+
         spawnLocation.world().spawnEntity(creeper);
-        Sponge.server().broadcastAudience().sendMessage(Component.text(creeper.toString() + " has been spawned"));
+        Sponge.server().broadcastAudience().sendMessage(Component.text(creeper.toString() + " has been spawned. It's keys are the following " + entity.getKeys().toString()));
+
+
+
         ///Sponge.getServer().getBroadcastChannel().send(Text.of(list2.get(0).getName()));
         //Songe.getServer().getBroadcastChannel().send(Text.of(list2.get(0).getId()));
     }

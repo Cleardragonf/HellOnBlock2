@@ -91,37 +91,36 @@ public class SpawnTesting {
 
             Collections.shuffle(nonZeroSpawnEntities);
 
-            for (int x = -20; x < 40; x++) {
-                for (int y = -40; y < 40; y++) {
-                    for (int z = -40; z < 40; z++) {
-                        int rangeMax = 10;
-                        int rangeMin = 5;
-                        double newSpawnX = playersLocation.x() + x;
-                        double newSpawnY = playersLocation.y() + y;
-                        double newSpawnZ = playersLocation.z() + z;
-                        double distanceToPlayer = Math.sqrt(
-                                Math.pow(newSpawnX - playersLocation.x(), 2) +
-                                        Math.pow(newSpawnY - playersLocation.y(), 2) +
-                                        Math.pow(newSpawnZ - playersLocation.z(), 2)
-                        );
+            int waveAmount = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", week, "Wave Size").getInt();
+            for (int i = 1; i < waveAmount; i++) {
+                for (int x = -20; x < 20; x++) {
+                    for (int y = -20; y < 20; y++) {
+                        for (int z = -20; z < 20; z++) {
+                            int rangeMax = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", week, "Maximum Range: ").getInt();
+                            int rangeMin = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", week, "Minimum Range: ").getInt();
+                            double newSpawnX = playersLocation.x() + x;
+                            double newSpawnY = playersLocation.y() + y;
+                            double newSpawnZ = playersLocation.z() + z;
+                            double distanceToPlayer = Math.sqrt(
+                                    Math.pow(newSpawnX - playersLocation.x(), 2) +
+                                            Math.pow(newSpawnY - playersLocation.y(), 2) +
+                                            Math.pow(newSpawnZ - playersLocation.z(), 2)
+                            );
 
-                        if (distanceToPlayer > rangeMin && distanceToPlayer <= rangeMax) {
-                            ServerWorld world = player.serverLocation().world();
-                            ServerLocation newSpawnLocation = ServerLocation.of(world, newSpawnX, newSpawnY, newSpawnZ);
-                            spawnLocation.add(newSpawnLocation);
+                            if (distanceToPlayer > rangeMin && distanceToPlayer <= rangeMax) {
+                                ServerWorld world = player.serverLocation().world();
+                                ServerLocation newSpawnLocation = ServerLocation.of(world, newSpawnX, newSpawnY, newSpawnZ);
+                                spawnLocation.add(newSpawnLocation);
+                            }
                         }
                     }
                 }
-            }
-            int waveAmount = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", week, "Wave Size").getInt();
-            for (int i = 1; i < waveAmount; i++) {
                 Collections.shuffle(spawnLocation);
                 int randomSpotAttempt = random.nextInt(spawnLocation.size());
                 Optional<ServerLocation> spawn1 = Sponge.game().server().teleportHelper().findSafeLocation(spawnLocation.get(randomSpotAttempt));
                 if (spawn1.isPresent()) {
                     Location vector1 = spawn1.get();
                     SpawnDecision spawnNewEntity = new SpawnDecision();
-                    if (spawn1.isPresent()) {
 
                         EntityType spawnEntity = null;
                         for (EntityType entityType : nonZeroSpawnEntities) {
@@ -129,6 +128,10 @@ public class SpawnTesting {
                             Collections.shuffle(spawnLocation);
                             break;  // To spawn only one entity for each iteration
                         }
+
+
+
+
                         Random roll = new Random();
                         int answer = roll.nextInt(100) + 1;
                         int chanceOfSpawning = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", spawnEntity.toString(), week, "=====Natural Spawning=====", "The Chance of each " + spawnEntity.toString() + " actually spawning: ").getInt();
@@ -142,8 +145,6 @@ public class SpawnTesting {
                                 if(isDarkEnough(vector1)){
                                     spawnNewEntity.newCreeper(vector1, ImmutableList.of(spawnEntity));
                                 }
-
-                        }
                     }
                 }
             }
