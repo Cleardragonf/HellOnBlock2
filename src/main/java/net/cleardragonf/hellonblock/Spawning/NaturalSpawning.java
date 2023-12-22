@@ -113,9 +113,9 @@ public class NaturalSpawning {
         }
         if(creeper.supports(CustomKeys.COST)){
             // Get the existing map value
-
+            int cost = ((int) mobHealth + explosionRadius) * weekNumber;
             // Set the modified map value back to the entity
-            creeper.offer(CustomKeys.COST, 5);
+            creeper.offer(CustomKeys.COST, cost);
 
         }
 

@@ -7,7 +7,9 @@ import java.util.UUID;
 import net.cleardragonf.hellonblock.ConfigurationManager;
 import net.cleardragonf.hellonblock.DayCounter;
 import net.cleardragonf.hellonblock.HOB;
+import net.cleardragonf.hellonblock.MobMechanics.CustomKeys;
 import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.units.qual.C;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.entity.Entity;
@@ -73,21 +75,12 @@ public class EcoRewards {
             Player player = optionalPlayer.get();
 
             UUID player2 = player.uniqueId();
-
-            String entity = event.entity().displayName().toString();
-            String entity2 = event.entity().toString();
             Cause cause = event.cause();
-            if(!ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entity2, week, "=====Monetary Benifits=====", "Per Kill: ").virtual()){
-                BigDecimal bd = new BigDecimal(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entity2, week, "=====Monetary Benifits=====", "Per Kill: ").getString());
-                player.sendMessage(Component.text("You Killed a " + entity + "  & earned " + bd));
-                HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
-            }else{
 
-                BigDecimal bd = new BigDecimal("5.00");
-                player.sendMessage(Component.text("You Killed a " + entity + " and will be paid $5"));
-                HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
-                Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
-            }
+            BigDecimal bd = new BigDecimal(event.entity().get(CustomKeys.COST).get());
+            Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
+            player.sendMessage(Component.text("You killed a ").append(event.entity().type()).append(Component.text(" and earned $" + event.entity().get(CustomKeys.COST).get())));
+            HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
 
 
         }
@@ -97,9 +90,6 @@ public class EcoRewards {
             Player player = (Player)killer;
             UUID player2 = player.uniqueId();
 
-
-            String entity = event.entity().getClass().getName();
-            String entity2 = event.entity().uniqueId().toString();
             Cause cause = event.cause();
             //if(entity2 == null){
             //  BigDecimal bd = new BigDecimal("5.00");
@@ -107,17 +97,13 @@ public class EcoRewards {
             //HOB.getEcon().getOrCreateAccount(player2).get().deposit(HOB.getEcon().getDefaultCurrency(), bd, cause);
             //Sponge.getServer().getConsole().sendMessage(Text.of(entity2 + " and it's name " + entity));
             //}
-            if(!ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entity2, week, "=====Monetary Benifits=====", "Per Kill: ").virtual()){
-                BigDecimal bd = new BigDecimal(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entity2, week, "=====Monetary Benifits=====", "Per Kill: ").getString());
-                player.sendMessage(Component.text("You Killed a " + entity + "  & earned " + bd));
-                HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
-            }else{
 
-                BigDecimal bd = new BigDecimal("5.00");
-                player.sendMessage(Component.text("You killed a ").append(event.entity().type()).append(Component.text(" and earned $5")));
+                BigDecimal bd = new BigDecimal(event.entity().get(CustomKeys.COST).get());
+                Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
+                player.sendMessage(Component.text("You killed a ").append(event.entity().type()).append(Component.text(" and earned $" + event.entity().get(CustomKeys.COST).get())));
                 HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
-                Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
-            }
+                //Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
+
 
 
         }else{

@@ -35,6 +35,7 @@ import org.spongepowered.api.service.economy.EconomyService;
 
 import java.lang.reflect.Type;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -182,7 +183,7 @@ public class HOB {
         if (!serviceOpt.isPresent()) {
             logger.info("great still not working");
         }
-        EconomyService economyService = serviceOpt.get();
+        economyService = serviceOpt.get();
 
         Sponge.server().scheduler().submit(Task.builder()
                 .interval(20, TimeUnit.SECONDS)
