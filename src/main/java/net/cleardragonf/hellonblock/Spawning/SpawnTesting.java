@@ -81,7 +81,7 @@ public class SpawnTesting {
             List<EntityType> nonZeroSpawnEntities = list2.stream()
                     .filter(entityType -> {
                         int chanceOfSpawning = ConfigurationManager.getInstance().getConfig()
-                                .node("=============Entity Control============", entityType.toString(), "Week 1",
+                                .node("=============Entity Control============", entityType.toString(), week,
                                         "=====Natural Spawning=====", "The Chance of each " +
                                                 entityType.toString() +
                                                 " actually spawning: ").getInt();
@@ -113,7 +113,7 @@ public class SpawnTesting {
                     }
                 }
             }
-            int waveAmount = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", "Week 1", "Wave Size").getInt();
+            int waveAmount = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", week, "Wave Size").getInt();
             for (int i = 1; i < waveAmount; i++) {
                 Collections.shuffle(spawnLocation);
                 int randomSpotAttempt = random.nextInt(spawnLocation.size());
@@ -131,7 +131,7 @@ public class SpawnTesting {
                         }
                         Random roll = new Random();
                         int answer = roll.nextInt(100) + 1;
-                        int chanceOfSpawning = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", spawnEntity.toString(), "Week 1", "=====Natural Spawning=====", "The Chance of each " + spawnEntity.toString() + " actually spawning: ").getInt();
+                        int chanceOfSpawning = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", spawnEntity.toString(), week, "=====Natural Spawning=====", "The Chance of each " + spawnEntity.toString() + " actually spawning: ").getInt();
                         if (answer <= chanceOfSpawning) {
 
                             // Shuffle the entity list before entering the loop

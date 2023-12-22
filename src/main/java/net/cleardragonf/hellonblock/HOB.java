@@ -120,7 +120,7 @@ public class HOB {
 
         DayCounter labelTest = new DayCounter();
 
-        labelTest.Days();
+        //labelTest.Days();
     }
 
     //========Game Schedulers ========
@@ -139,8 +139,8 @@ public class HOB {
                 .delay(20, TimeUnit.SECONDS)
                 .plugin(pluginContainer)
                 .execute(scheduledTask -> {
-                    DayCounter getStarted = new DayCounter();
-                    getStarted.Days();
+                    new DayCounter();
+
                 }).build()
         );
 

@@ -19,8 +19,8 @@ public class CommandManager implements CommandExecutor {
         }
 
         Player player = (Player) args.cause().root();
-        MinecraftDayTime time = player.world().properties().dayTime();
-        int day = MinecraftDayTime.minecraftEpoch().day();
+        String time = player.world().properties().dayTime().hour() + ":" + player.world().properties().dayTime().minute();
+        int day = player.world().properties().dayTime().day();
 
         player.sendMessage(Component.text("Time on the Server is: " + time + ", on the " + day + " day of the month"));
         return CommandResult.success();

@@ -1,35 +1,39 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package net.cleardragonf.hellonblock;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.util.MinecraftDayTime;
 
-import java.awt.*;
-
-import net.cleardragonf.hellonblock.DayCounter;
-
 public class DayCounter {
     public static int week = 1;
 
-    public DayCounter() {
+    public static boolean isBetween(int x, int lower, int upper) {
+        return lower <= x && x <= upper;
     }
 
-    public void Days() {
+    // Constructor
+    public DayCounter() {
         MinecraftDayTime currentTime = Sponge.game().server().worldManager().defaultWorld().properties().dayTime();
-        if (31 > currentTime.day()) {
 
+        if (30 > currentTime.day()) {
+            if (isBetween(currentTime.day(), 1, 7)) {
+                week = 1;
+            } else if (isBetween(currentTime.day(), 8, 14)) {
+                week = 2;
+            } else if (isBetween(currentTime.day(), 15, 21)) {
+                week = 3;
+            } else if (isBetween(currentTime.day(), 22, 28)) {
+                week = 4;
+            } else {
+                week = 5;
+            }
         } else {
-            currentTime.subtract(30,0,0);
+            // Set the day to 0 by creating a new MinecraftDayTime object
+            MinecraftDayTime newTime = MinecraftDayTime.of(1, 6, 0).subtract(1,0,0);
+            Sponge.game().server().worldManager().defaultWorld().properties().setDayTime(newTime);
         }
-
     }
 
     public static int getWeeklyConfig() {
         return week;
     }
-
 }
