@@ -192,7 +192,7 @@ public class HOB {
                     for(ServerPlayer a: Sponge.server().onlinePlayers()){
                         if(a.world().properties().displayName().toString() != "DIM144"){
                             Player player2 = Sponge.server().onlinePlayers().iterator().next();
-                            Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
+                            //Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
                             SpawnTesting spawnTest = new SpawnTesting(ConfigurationManager.getInstance());
                             spawnTest.getSpace(player2);
                         }else{

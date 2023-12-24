@@ -78,7 +78,7 @@ public class EcoRewards {
             Cause cause = event.cause();
 
             BigDecimal bd = new BigDecimal(event.entity().get(CustomKeys.COST).get());
-            Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
+            //Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
             player.sendMessage(Component.text("You killed a ").append(event.entity().type()).append(Component.text(" and earned $" + event.entity().get(CustomKeys.COST).get())));
             HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
 
@@ -99,7 +99,7 @@ public class EcoRewards {
             //}
 
                 BigDecimal bd = new BigDecimal(event.entity().get(CustomKeys.COST).get());
-                Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
+                //Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
                 player.sendMessage(Component.text("You killed a ").append(event.entity().type()).append(Component.text(" and earned $" + event.entity().get(CustomKeys.COST).get())));
                 HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
                 //Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));

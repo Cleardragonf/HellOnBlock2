@@ -82,7 +82,7 @@ public class NaturalSpawning {
         //creeper.offer(Keys.GLOWING, true);
 
         if(creeper.supports(Keys.HEALTH)){
-            Sponge.server().broadcastAudience().sendMessage(Component.text("here's the Entity: " + entityType));
+            //Sponge.server().broadcastAudience().sendMessage(Component.text("here's the Entity: " + entityType));
             if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Enable Custom Health: ").getBoolean() == true){
                 int maxHealth = ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Custom Properties=====", "Custom Health: ").getInt();
                 Random random = new Random();
@@ -111,6 +111,7 @@ public class NaturalSpawning {
                 creeper.offer(Keys.EXPLOSION_RADIUS, explosionRadius);
             }
         }
+
         if(creeper.supports(CustomKeys.COST)){
             // Get the existing map value
             int cost = ((int) mobHealth + explosionRadius) * weekNumber;
@@ -120,7 +121,7 @@ public class NaturalSpawning {
         }
 
         spawnLocation.world().spawnEntity(creeper);
-        Sponge.server().broadcastAudience().sendMessage(Component.text(creeper.toString() + " has been spawned. It's keys are the following " + entity.getKeys().toString()));
+        //Sponge.server().broadcastAudience().sendMessage(Component.text(creeper.toString() + " has been spawned. It's keys are the following " + entity.getKeys().toString()));
 
 
 
