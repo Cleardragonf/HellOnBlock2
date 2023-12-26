@@ -91,6 +91,10 @@ public class SpawnTesting {
 
             Collections.shuffle(nonZeroSpawnEntities);
 
+            if(nonZeroSpawnEntities.isEmpty()){
+                return;
+            }
+
             int waveAmount = ConfigurationManager.getInstance().getConfig().node("========General Week Properties========", week, "Wave Size").getInt();
             for (int i = 1; i < waveAmount; i++) {
                 for (int x = -20; x < 20; x++) {

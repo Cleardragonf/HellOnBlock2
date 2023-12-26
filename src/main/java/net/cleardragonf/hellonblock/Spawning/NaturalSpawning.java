@@ -59,7 +59,7 @@ public class NaturalSpawning {
 
 
     }
-    public double mobHealth = 0;
+    public double mobHealth = 1;
     public int explosionRadius = 0;
     public
     int test = DayCounter.getWeeklyConfig();
@@ -114,10 +114,10 @@ public class NaturalSpawning {
 
         if(creeper.supports(CustomKeys.COST)){
             // Get the existing map value
-            int cost = ((int) mobHealth + explosionRadius) * weekNumber;
+            int cost = (((int) mobHealth + explosionRadius) * weekNumber) + ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", entityType.toString(), week, "=====Monetary Benifits=====", "Per Kill: ").getInt();
+            Sponge.server().broadcastAudience().sendMessage(Component.text(cost));
             // Set the modified map value back to the entity
             creeper.offer(CustomKeys.COST, cost);
-
         }
 
         spawnLocation.world().spawnEntity(creeper);
