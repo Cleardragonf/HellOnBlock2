@@ -186,17 +186,19 @@ public class HOB {
         economyService = serviceOpt.get();
 
         Sponge.server().scheduler().submit(Task.builder()
-                .interval(20, TimeUnit.SECONDS)
+                .interval(60, TimeUnit.SECONDS)
                 .plugin(pluginContainer)
                 .execute(scheduledTask -> {
-                    for(ServerPlayer a: Sponge.server().onlinePlayers()){
-                        if(a.world().properties().displayName().toString() != "DIM144"){
-                            Player player2 = Sponge.server().onlinePlayers().iterator().next();
-                            //Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
-                            SpawnTesting spawnTest = new SpawnTesting(ConfigurationManager.getInstance());
-                            spawnTest.getSpace(player2);
-                        }else{
-                            logger.info(a.name() + " is currently sitting in a Compact Machine");
+                    if(Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() <= 23 && Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() >= 12){
+                        for(ServerPlayer a: Sponge.server().onlinePlayers()){
+                            if(a.world().properties().displayName().toString() != "DIM144"){
+                                Player player2 = Sponge.server().onlinePlayers().iterator().next();
+                                //Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
+                                SpawnTesting spawnTest = new SpawnTesting(ConfigurationManager.getInstance());
+                                spawnTest.getSpace(player2);
+                            }else{
+                                logger.info(a.name() + " is currently sitting in a Compact Machine");
+                            }
                         }
                     }
                 }).build()
