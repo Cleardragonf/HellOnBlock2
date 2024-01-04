@@ -186,10 +186,10 @@ public class HOB {
         economyService = serviceOpt.get();
 
         Sponge.server().scheduler().submit(Task.builder()
-                .interval(60, TimeUnit.SECONDS)
+                .interval(30, TimeUnit.SECONDS)
                 .plugin(pluginContainer)
                 .execute(scheduledTask -> {
-                    if(Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() <= 23 && Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() >= 12){
+                    if(Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() <= 4 || Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() >= 18){
                         for(ServerPlayer a: Sponge.server().onlinePlayers()){
                             if(a.world().properties().displayName().toString() != "DIM144"){
                                 Player player2 = Sponge.server().onlinePlayers().iterator().next();
