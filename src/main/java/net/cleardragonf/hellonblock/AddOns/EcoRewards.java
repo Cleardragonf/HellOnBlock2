@@ -84,11 +84,11 @@ public class EcoRewards {
                 HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
                 //Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
             }else if(!ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", event.entity().type().toString(), week, "=====Monetary Benifits=====", "Per Kill: ").empty()){
-                BigDecimal bd = new BigDecimal(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", event.entity().type().toString(), week, "=====Monetary Benifits=====", "Per Kill: ").getInt());
+                BigDecimal bd = new BigDecimal(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", event.entity().type().toString(), week, "=====Monetary Benifits=====", "Per Kill: ").getInt() * weekNumber);
                 player.sendMessage(Component.text("No COST: You Killed a ").append(event.entity().type()).append(Component.text(" and Earned $" + bd)));
                 HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
             }else if(ConfigurationManager.getInstance().getConfig().node("=============Entity Control============", event.entity().type().toString(), week, "=====Monetary Benifits=====", "Per Kill: ").empty()){
-                BigDecimal bd = new BigDecimal(5);
+                BigDecimal bd = new BigDecimal(5 * weekNumber);
                 player.sendMessage(Component.text("No config: You Killed a ").append(event.entity().type()).append(Component.text(" and Earned $" + bd)));
                 HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
             }

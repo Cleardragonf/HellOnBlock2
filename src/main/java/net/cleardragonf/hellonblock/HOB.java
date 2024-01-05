@@ -2,6 +2,7 @@ package net.cleardragonf.hellonblock;
 
 import com.google.inject.Inject;
 import net.cleardragonf.hellonblock.AddOns.Balance;
+import net.cleardragonf.hellonblock.AddOns.EcoPunishments;
 import net.cleardragonf.hellonblock.AddOns.EcoRewards;
 import net.cleardragonf.hellonblock.Commands.CommandManager;
 import net.cleardragonf.hellonblock.Commands.SetDayCommand;
@@ -9,6 +10,7 @@ import net.cleardragonf.hellonblock.MobMechanics.BreakBlockMechanic;
 import net.cleardragonf.hellonblock.MobMechanics.CustomKeys;
 import net.cleardragonf.hellonblock.Spawning.SpawnTesting;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
@@ -69,6 +71,8 @@ public class HOB {
     {
         return this.logger;
     }
+
+    public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
 
     private static HOB instance;
 
@@ -178,6 +182,7 @@ public class HOB {
     @Listener
     public void payPlayers(StartedEngineEvent<Server> event){
         Sponge.eventManager().registerListeners(pluginContainer, new EcoRewards());
+        Sponge.eventManager().registerListeners(pluginContainer, new EcoPunishments());
 
         Optional<EconomyService> serviceOpt = Sponge.server().serviceProvider().economyService();
         if (!serviceOpt.isPresent()) {
