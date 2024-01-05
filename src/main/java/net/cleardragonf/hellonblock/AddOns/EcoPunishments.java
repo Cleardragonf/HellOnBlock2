@@ -18,7 +18,9 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
+import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.First;
 
 import javax.xml.soap.Text;
@@ -29,11 +31,8 @@ import java.util.UUID;
 public class EcoPunishments {
 
     @Listener
-    public void onPlayerDeath(DestructEntityEvent.Death event, @First EntityDamageSource src){
-        if(event.entity() instanceof Player){
-            Entity killer = src.source();
-            Entity victim = event.entity();
-
+    public void onPlayerDeath(DestructEntityEvent event, @Getter("entity")Player player, @First EntityDamageSource src){
+            HOB.LOGGER.warn("firing!");
 
             int weekNumber = DayCounter.getWeeklyConfig();
             String week = null;
@@ -43,86 +42,62 @@ public class EcoPunishments {
                 week = "HOB Night";
             }
 
-            // not currently used except against other players************
-            //if (event.getTargetEntity() instanceof Player){
-            //	String a = event.getClass().getName().toString();
-            //	Sponge.getServer().getBroadcastChannel().send(Text.of("HIi " + a));
-            //}
-            Sponge.game().server().broadcastAudience().sendMessage(Component.text("firing!"));
-            //if the item that kills a mob is a projectile ie arrow etc.
-            if (src.source() instanceof Projectile){
+            Player victim = (Player) event.entity();
+            if(event.cause().contains(DamageSources.DROWNING) || event.cause().contains(DamageSources.FALLING)||event.cause().contains(DamageSources.STARVATION)||
+                    event.cause().contains(DamageSources.DRYOUT) || event.cause().contains(DamageSources.FIRE_TICK) || event.cause().contains(DamageSources.MAGIC)||
+                    event.cause().contains(DamageSources.WITHER)){
+                int cost = 100 * weekNumber;
+                Cause cause = event.cause();
+                BigDecimal bd = new BigDecimal(cost);
+                victim.sendMessage(Component.text("You died from " + cause.toString() + " thus you lost $" + bd));
+                HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(), bd,cause);
+            }
+            if(src.source() instanceof Entity){
+
+                Entity killer = (Entity) src.source();
+                Cause cause = event.cause();
+                int cost = 5 * weekNumber;
+                BigDecimal bd = new BigDecimal(cost);
+
+                victim.sendMessage(Component.text("You were killed by " + killer.type() + " and lost $" + bd));
+                HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(),bd,cause);
+            }
+            if(src.source() instanceof Projectile){
+                HOB.LOGGER.warn("Firing Arrows!");
                 Projectile projectile = (Projectile) src.source();
                 Optional<Value.Mutable<UUID>> arrow = projectile.creator();
-
-                if(!arrow.isPresent()){
-                    return;
-                }
+                if(!arrow.isPresent()){return;}
 
                 Optional<ServerPlayer> optionalPlayer = Sponge.game().server().player(arrow.toString());
-
                 if(optionalPlayer.isPresent()){
-                    Player player = optionalPlayer.get();
-
-                    UUID player2 = player.uniqueId();
+                    Player killer = optionalPlayer.get();
                     Cause cause = event.cause();
 
-                    int cost = HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().balance(HOB.getEcon().defaultCurrency()).intValue() / 2;
+                    int cost = HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().balance(HOB.getEcon().defaultCurrency()).intValue() /2;
                     BigDecimal bd = new BigDecimal(cost);
-                    //Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
-                    player.sendMessage(Component.text("You killed a player and stole $" + bd + " from them. Better be careful."));
-                    player.sendMessage(Component.text(player + " killed you and stole $" + bd));
-                    //Killers payout
-                    HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
-                    //Victims Punishment
-                    HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(), bd, cause);
-                    //Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
+                    killer.sendMessage(Component.text("You Killed " + victim + " and stole $" + bd + " from them.  Better be careful."));
+                    victim.sendMessage(Component.text(killer + " killed you and stole$" + bd));
+                    HOB.getEcon().findOrCreateAccount(killer.uniqueId()).get().deposit(HOB.getEcon().defaultCurrency(), bd,cause);
+                    HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(), bd,cause);
                 }else{
-                    Player player = (Player) victim;
-                    UUID player2 = player.uniqueId();
-                    Cause cause = event.cause();
-
-                    BigDecimal bd = new BigDecimal(5* weekNumber);
-                    //Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
-                    player.sendMessage(Component.text(cause + " killed you and stole $" + bd));
-                    //Victims Punishment
-                    HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(), bd, cause);
-
+                    BigDecimal bd = new BigDecimal(5 * weekNumber);
+                    victim.sendMessage(Component.text(event.cause() + " hit you so now you've lost $" + bd));
+                    HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(),bd,event.cause());
                 }
-
             }
 
-            else if (killer instanceof Player){
-                Sponge.game().server().broadcastAudience().sendMessage(Component.text("Player died!"));
-                Player player = (Player)killer;
-                UUID player2 = player.uniqueId();
-
+            if(src.source() instanceof Player){
+                Player killer = (Player)src.source();
                 Cause cause = event.cause();
 
-                int cost = HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().balance(HOB.getEcon().defaultCurrency()).intValue() / 2;
+                int cost = HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().balance(HOB.getEcon().defaultCurrency()).intValue() /2;
                 BigDecimal bd = new BigDecimal(cost);
-                //Sponge.server().broadcastAudience().sendMessage(Component.text(bd.toString()));
-                player.sendMessage(Component.text("You killed a player and stole $" + bd + " from them. Better be careful."));
-                player.sendMessage(Component.text(player + " killed you and stole $" + bd));
-                //Killers payout
-                HOB.getEcon().findOrCreateAccount(player2).get().deposit(HOB.getEcon().defaultCurrency(), bd, cause);
-                //Victims Punishment
-                HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(), bd, cause);
-                //Sponge.server().broadcastAudience().sendMessage(Component.text("Need the following added to HOB config : " + entity2));
 
-            }else if(killer instanceof Entity){
-                Sponge.game().server().broadcastAudience().sendMessage(Component.text("Killed by a mob: " + killer));
+                killer.sendMessage(Component.text("You killed " + victim + " and stole $" + bd + " from them. Better be careful."));
+                victim.sendMessage(Component.text(killer + " killed you and stole $" + bd));
+
+                HOB.getEcon().findOrCreateAccount(killer.uniqueId()).get().deposit(HOB.getEcon().defaultCurrency(),bd,cause);
+                HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(),bd,cause);
             }
-
-            else{
-                //USED TO DETECT OTHERWAYS OF KILLING SOMETHING?
-                BigDecimal bd = new BigDecimal(10* weekNumber);
-                Cause cause = event.cause();
-                HOB.getEcon().findOrCreateAccount(victim.uniqueId()).get().withdraw(HOB.getEcon().defaultCurrency(), bd, cause);
-                Sponge.game().server().broadcastAudience().sendMessage(Component.text("This is what killed you: " + killer));
-            }
-
-            //String entity = event.getTargetEntity().getType().getName();
-            //player.sendMessage(Text.of(entity));
         }
-    }
 }
