@@ -16,37 +16,31 @@ import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.data.DataProvider;
 import org.spongepowered.api.data.DataRegistration;
-import org.spongepowered.api.data.Key;
-import org.spongepowered.api.data.persistence.DataQuery;
-import org.spongepowered.api.data.persistence.DataStore;
-import org.spongepowered.api.data.value.MapValue;
-import org.spongepowered.api.data.value.Value;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.event.GenericEvent;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
+import org.spongepowered.api.event.entity.living.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.lifecycle.*;
+import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 
-import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.util.MinecraftDayTime;
+import org.spongepowered.api.world.server.ServerWorld;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.math.vector.Vector3i;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
-import sun.rmi.runtime.Log;
 
 @Plugin("hellonblocks")
 public class HOB {
@@ -196,7 +190,7 @@ public class HOB {
                 .execute(scheduledTask -> {
                     if(Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() <= 4 || Sponge.game().server().worldManager().defaultWorld().properties().dayTime().hour() >= 18){
                         for(ServerPlayer a: Sponge.server().onlinePlayers()){
-                            if(a.world().properties().displayName().toString() != "DIM144"){
+                            if(a.world().properties().displayName().toString() != "compactmachines"){
                                 Player player2 = Sponge.server().onlinePlayers().iterator().next();
                                 //Sponge.server().broadcastAudience().sendMessage(Component.text("Firing Spawn..."));
                                 SpawnTesting spawnTest = new SpawnTesting(ConfigurationManager.getInstance());

@@ -54,7 +54,7 @@ public class EcoPunishments {
             }
             if(src.source() instanceof Entity){
 
-                Entity killer = (Entity) src.source();
+                Entity killer = src.source();
                 Cause cause = event.cause();
                 int cost = 5 * weekNumber;
                 BigDecimal bd = new BigDecimal(cost);
